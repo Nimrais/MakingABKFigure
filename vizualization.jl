@@ -5,7 +5,7 @@ using ColorVectorSpace
 default(background_color = :white)
 
 # Params
-R = 3.0
+R = 1.0
 levels = 5                 # includes poles
 n_long = 9
 dθ = 180.0/(levels-1)
@@ -117,3 +117,33 @@ end
 
 savefig(p, "sphere_grid.png")
 
+# --- Create 2D projection plot ---
+# For each point on the sphere, compute (arcsin(z/R), atan(y,x))
+p2 = plot(legend=false, grid=true, framestyle=:box, size=(900, 600),
+          xlabel="φ = atan(y,x)", ylabel="θ' = arcsin(z/R)",
+          xlims=(-π-0.2, π+0.2), ylims=(-π/2-0.2, π/2+0.2),
+          aspect_ratio=:equal)
+
+# Project poles
+scatter!(p2, [0.0], [π/2], mc=:black, ms=4.0)  # North pole: z/R = 1
+scatter!(p2, [0.0], [-π/2], mc=:black, ms=4.0) # South pole: z/R = -1
+
+# Project rings of points
+for r in 1:(levels-2)
+    θ = r*dθ
+    proj_x = Float64[]
+    proj_y = Float64[]
+    for ℓ in 0:(n_long-1)
+        φ = ℓ*dφ
+        x,y,z = to_cart(θ, φ, R_points)
+        # Compute projection: (arcsin(z/R), atan(y,x))
+        θ_proj = asin(z)
+        φ_proj = atan(y, x)
+        push!(proj_x, φ_proj)
+        push!(proj_y, θ_proj)
+    end
+    scatter!(p2, proj_x, proj_y, mc=:black, ms=4.0)
+end
+
+# Only project the points, no grid lines or geodesics
+savefig(p2, "sphere_projection.png")
