@@ -254,8 +254,8 @@ for r in 1:(length(rings)-1)
     # Two triangles per quad
     plot!(p2,[max, fake_positive, fake_positive], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
     plot!(p2, [max, fake_positive, max], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
-    plot!(p2, [min, fake_negative, fake_negative], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
-    plot!(p2, [min, fake_negative,min], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+    plot!(p2, [min, fake_negative, min], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
+    plot!(p2, [fake_negative,min, fake_negative], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
 end
 
 #Additional square on the corners 
