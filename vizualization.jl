@@ -144,13 +144,14 @@ p2 = heatmap(θ, ϕ, Z,
     colorbar_title = "cos(φ)", 
     xticks = (-π:π/2:π, ["-π", "-π/2", "0", "π/2", "π"]), 
     yticks = (-π/2:π/4:π/2, ["-π/2", "-π/4", "0", "π/4", "π/2"]),
-    framestyle=:box, size=(900, 600),)
+    framestyle=:box, size=(900, 600),
+    legend = false,)
 
-# Add red horizontal line at ϕ = 0
-hline!([0], color = :red, linewidth = 2, alpha = 0.7, legend = false, linestyle = :dot)
+# # Add red horizontal line at ϕ = 0
+# hline!([0], color = :red, linewidth = 2, alpha = 0.7, legend = false, linestyle = :dot)
 
-# Add blue vertical line at θ = 0
-vline!([0], color = :blue, linewidth = 2, alpha = 0.7, legend = false)
+# # Add blue vertical line at θ = 0
+# vline!([0], color = :blue, linewidth = 2, alpha = 0.7, legend = false)
 
 
 
