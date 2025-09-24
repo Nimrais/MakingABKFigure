@@ -140,6 +140,8 @@ p2 = heatmap(θ, ϕ, Z,
     colorbar_title = "cos(φ)", 
     xticks = (-π:π/2:π, ["-π", "-π/2", "0", "π/2", "π"]), 
     yticks = (-π/2:π/4:π/2, ["-π/2", "-π/4", "0", "π/4", "π/2"]),
+    xlims = (-π, π),  # Strictly limit x-axis to [-π, π]
+    ylims = (-π/2, π/2),  # Strictly limit y-axis to [-π/2, π/2]
     framestyle=:box, size=(900, 600),
     legend = false,)
 
