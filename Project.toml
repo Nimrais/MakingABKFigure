@@ -1,3 +1,4 @@
 [deps]
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 ColorVectorSpace = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"

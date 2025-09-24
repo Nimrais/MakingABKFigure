@@ -119,10 +119,6 @@ savefig(p, "sphere_grid.png")
 
 
 
-
-
-
-
 # --- Create 2D projection plot ---
 # For each point on the sphere, compute (arcsin(z/R), atan(y,x))
 
@@ -271,11 +267,6 @@ plot!(p2, [Min, Min, fake_negative,fake_negative], [rings[end][1][2], -π/2, -π
 plot!(p2, [Min, Min, fake_positive,fake_positive], [rings[end][1][2], -π/2, -π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
 plot!(p2, [Max, Max, fake_negative,fake_negative], [rings[end][1][2], π/2, π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
 plot!(p2, [Max, Max, fake_positive,fake_positive], [rings[end][1][2], π/2, π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
-
-
-
-
-
 
 
 # Only project the points, no grid lines or geodesics
