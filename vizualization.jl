@@ -165,8 +165,8 @@ p2 = heatmap(θ, ϕ, Z,
 #           yticks = (-π/2:π/4:π/2, ["-π/2", "-π/4", "0", "π/4", "π/2"]),)
 
 # Project poles
-scatter!( [0.0], [π/2], mc=:green, ms=4.0)  # North pole: z/R = 1
-scatter!( [0.0], [-π/2], mc=:green, ms=4.0) # South pole: z/R = -1
+# scatter!( [0.0], [π/2], mc=:green, ms=4.0)  # North pole: z/R = 1
+# scatter!( [0.0], [-π/2], mc=:green, ms=4.0) # South pole: z/R = -1
 
 
 rings = [] # To store the projection of each ring of points
@@ -189,7 +189,7 @@ for r in 1:(levels-2)
         push!(ring, (φ_proj, θ_proj))
     end
     push!(rings, ring)
-    scatter!( proj_x, proj_y, mc=:green, ms=4.0)
+    # scatter!( proj_x, proj_y, mc=:green, ms=4.0)
 end
 
 # North and south pole
@@ -202,22 +202,25 @@ color_pole = false
 #     point1 = north_pole
 #     point2 = rings[1][i]
 #     point3 = rings[1][mod1(i+1, n_long)]
-#     plot!(p2, [point2[1], point2[1], point3[2], point3[1]], [point2[2], π/2, π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="green", label=false)
+#     plot!(p2, [point2[1], point2[1], point3[2], point3[1]], [point2[2], π/2, π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="red", label=false)
 # end
+
+linewidth = 1
 
 # Fill triangles between last ring and south pole
 for i in 1:n_long-1
     point1 = rings[1][i]
     point2 = rings[1][mod1(i+1, n_long)]
-    plot!(p2, [point1[1], point1[1], point2[1], point2[1]], [point1[2], π/2, π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="green", label=false)
+    plot!(p2, [point1[1], point1[1], point2[1], point2[1]], [point1[2], π/2, π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="red", label=false,linewidth = linewidth)
 end
+
 
 
 # Fill triangles between last ring and south pole
 for i in 1:n_long
     point1 = rings[end][i]
     point2 = rings[end][mod1(i+1, n_long)]
-    plot!(p2, [point1[1], point1[1], point2[1], point2[1]], [point1[2], -π/2, -π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="green", label=false)
+    plot!(p2, [point1[1], point1[1], point2[1], point2[1]], [point1[2], -π/2, -π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="red", label=false, linewidth = linewidth)
 end
 
 # color_middle = RGBA(0.1,0.1,0.1,0.7)
@@ -235,8 +238,8 @@ for r in 1:(length(rings)-1)
             b1 = ringB[i]
             b2 = ringB[mod1(i+1, n_long)]
             # Two triangles per quad
-            plot!(p2, [a1[1], b1[1], b2[1]], [a1[2], b1[2], b2[2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
-            plot!(p2, [a1[1], b2[1], a2[1]], [a1[2], b2[2], a2[2]], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
+            plot!(p2, [a1[1], b1[1], b2[1]], [a1[2], b1[2], b2[2]], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
+            plot!(p2, [a1[1], b2[1], a2[1]], [a1[2], b2[2], a2[2]], seriestype=:shape, fillcolor=color_external, linecolor="red", label=false, linewidth = linewidth)
         end
     end
 end
@@ -253,10 +256,10 @@ for r in 1:(length(rings)-1)
     ringA_y = ringA[1][2]
     ringB_y = ringB[1][2]
     # Two triangles per quad
-    plot!(p2,[max, fake_positive, fake_positive], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
-    plot!(p2, [max, fake_positive, max], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
-    plot!(p2, [min, fake_negative, min], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
-    plot!(p2, [fake_negative,min, fake_negative], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+    plot!(p2,[max, fake_positive, fake_positive], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="red", label=false, linewidth = linewidth)
+    plot!(p2, [max, fake_positive, max], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
+    plot!(p2, [min, fake_negative, min], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="red", label=false, linewidth = linewidth)
+    plot!(p2, [fake_negative,min, fake_negative], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
 end
 
 #Additional square on the corners 
@@ -264,10 +267,10 @@ Max = maximum([rings[1][i][1] for i in 1:n_long])
 Min = minimum([rings[1][i][1] for i in 1:n_long])
 fake_positive = Max + abs(rings[1][1][1] - rings[1][2][1])
 fake_negative = Min -abs(rings[1][1][1] - rings[1][2][1])
-plot!(p2, [Min, Min, fake_negative,fake_negative], [rings[end][1][2], -π/2, -π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
-plot!(p2, [Min, Min, fake_positive,fake_positive], [rings[end][1][2], -π/2, -π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
-plot!(p2, [Max, Max, fake_negative,fake_negative], [rings[end][1][2], π/2, π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
-plot!(p2, [Max, Max, fake_positive,fake_positive], [rings[end][1][2], π/2, π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+plot!(p2, [Min, Min, fake_negative,fake_negative], [rings[end][1][2], -π/2, -π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
+plot!(p2, [Min, Min, fake_positive,fake_positive], [rings[end][1][2], -π/2, -π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
+plot!(p2, [Max, Max, fake_negative,fake_negative], [rings[end][1][2], π/2, π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
+plot!(p2, [Max, Max, fake_positive,fake_positive], [rings[end][1][2], π/2, π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="red", label=false, linewidth = linewidth)
 
 
 
