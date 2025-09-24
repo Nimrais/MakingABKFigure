@@ -1,7 +1,7 @@
 using Plots
 using LinearAlgebra
 using ColorVectorSpace
-
+using ColorSchemes
 default(background_color = :white)
 
 # Params
@@ -117,18 +117,55 @@ end
 
 savefig(p, "sphere_grid.png")
 
+
+
+
+
+
+
 # --- Create 2D projection plot ---
 # For each point on the sphere, compute (arcsin(z/R), atan(y,x))
-p2 = plot(legend=false, grid=true, framestyle=:box, size=(900, 600),
-          xlabel="θ = atan(y,x)", ylabel="φ = arcsin(z)",
-          xlims=(-π+0.02, π+0.02), ylims=(-π/2-0.05, π/2+0.05),
-          aspect_ratio=:equal, 
-          xticks = (-π:π/2:π, ["-π", "-π/2", "0", "π/2", "π"]), 
-          yticks = (-π/2:π/4:π/2, ["-π/2", "-π/4", "0", "π/4", "π/2"]),)
+
+
+
+# Define the domain
+ϕ = range(-π/2, π/2, length=300)
+θ = range(-π, π, length=300)
+
+# Create a 2D array of cos(ϕ) values (constant along θ)
+Z = [cos(phi) for phi in ϕ, _ in θ]
+
+# Plot the heatmap with reversed grayscale
+p2 = heatmap(θ, ϕ, Z,
+    color = cgrad(:grays, rev=true),
+    xlabel = "θ",
+    ylabel = "φ",
+    title = "Shading of the density",
+    colorbar_title = "cos(φ)", 
+    xticks = (-π:π/2:π, ["-π", "-π/2", "0", "π/2", "π"]), 
+    yticks = (-π/2:π/4:π/2, ["-π/2", "-π/4", "0", "π/4", "π/2"]),
+    framestyle=:box, size=(900, 600),)
+
+# Add red horizontal line at ϕ = 0
+hline!([0], color = :red, linewidth = 2, alpha = 0.7, legend = false, linestyle = :dot)
+
+# Add blue vertical line at θ = 0
+vline!([0], color = :blue, linewidth = 2, alpha = 0.7, legend = false)
+
+
+
+
+# p2 = plot(legend=false, grid=true, framestyle=:box, size=(900, 600),
+#           xlabel="θ = atan(y,x)", ylabel="φ = arcsin(z)",
+#           xlims=(-π+0.02, π+0.02), ylims=(-π/2-0.05, π/2+0.05),
+#           aspect_ratio=:equal, 
+#           colorbar_title = "cos(φ)",
+#           xticks = (-π:π/2:π, ["-π", "-π/2", "0", "π/2", "π"]), 
+#           yticks = (-π/2:π/4:π/2, ["-π/2", "-π/4", "0", "π/4", "π/2"]),)
 
 # Project poles
-# scatter!(p2, [0.0], [π/2], mc=:black, ms=4.0)  # North pole: z/R = 1
-# scatter!(p2, [0.0], [-π/2], mc=:black, ms=4.0) # South pole: z/R = -1
+scatter!( [0.0], [π/2], mc=:green, ms=4.0)  # North pole: z/R = 1
+scatter!( [0.0], [-π/2], mc=:green, ms=4.0) # South pole: z/R = -1
 
 
 rings = [] # To store the projection of each ring of points
@@ -151,20 +188,27 @@ for r in 1:(levels-2)
         push!(ring, (φ_proj, θ_proj))
     end
     push!(rings, ring)
-    # scatter!(p2, proj_x, proj_y, mc=:black, ms=4.0)
+    scatter!( proj_x, proj_y, mc=:green, ms=4.0)
 end
 
 # North and south pole
 north_pole = (0.0, π/2)
 south_pole = (0.0, -π/2)
 
-color_pole = RGBA(0.85,0.85,0.85,0.7)
+color_pole = false
 # Fill triangles between north pole and first ring
-for i in 1:n_long
-    point1 = north_pole
-    point2 = rings[1][i]
-    point3 = rings[1][mod1(i+1, n_long)]
-    plot!(p2, [point1[1], point2[1], point3[1]], [point1[2], point2[2], point3[2]], seriestype=:shape, fillcolor=color_pole, linecolor=:auto, label=false)
+# for i in 1:n_long
+#     point1 = north_pole
+#     point2 = rings[1][i]
+#     point3 = rings[1][mod1(i+1, n_long)]
+#     plot!(p2, [point2[1], point2[1], point3[2], point3[1]], [point2[2], π/2, π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="green", label=false)
+# end
+
+# Fill triangles between last ring and south pole
+for i in 1:n_long-1
+    point1 = rings[1][i]
+    point2 = rings[1][mod1(i+1, n_long)]
+    plot!(p2, [point1[1], point1[1], point2[1], point2[1]], [point1[2], π/2, π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="green", label=false)
 end
 
 
@@ -172,12 +216,13 @@ end
 for i in 1:n_long
     point1 = rings[end][i]
     point2 = rings[end][mod1(i+1, n_long)]
-    point3 = south_pole
-    plot!(p2, [point1[1], point2[1], point3[1]], [point1[2], point2[2], point3[2]], seriestype=:shape, fillcolor=color_pole, linecolor=:auto, label=false)
+    plot!(p2, [point1[1], point1[1], point2[1], point2[1]], [point1[2], -π/2, -π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="green", label=false)
 end
 
-color_middle = RGBA(0.1,0.1,0.1,0.7)
-color_external = RGBA(0.4,0.4,0.4,0.7)
+# color_middle = RGBA(0.1,0.1,0.1,0.7)
+# color_external = RGBA(0.4,0.4,0.4,0.7)
+color_middle = false
+color_external = false
 # Fill triangles between rings
 for r in 1:(length(rings)-1)
     ringA = rings[r]
@@ -189,8 +234,8 @@ for r in 1:(length(rings)-1)
             b1 = ringB[i]
             b2 = ringB[mod1(i+1, n_long)]
             # Two triangles per quad
-            plot!(p2, [a1[1], b1[1], b2[1]], [a1[2], b1[2], b2[2]], seriestype=:shape, fillcolor=color_middle, linecolor=:auto, label=false)
-            plot!(p2, [a1[1], b2[1], a2[1]], [a1[2], b2[2], a2[2]], seriestype=:shape, fillcolor=color_external, linecolor=:auto, label=false)
+            plot!(p2, [a1[1], b1[1], b2[1]], [a1[2], b1[2], b2[2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+            plot!(p2, [a1[1], b2[1], a2[1]], [a1[2], b2[2], a2[2]], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
         end
     end
 end
@@ -207,14 +252,27 @@ for r in 1:(length(rings)-1)
     ringA_y = ringA[1][2]
     ringB_y = ringB[1][2]
     # Two triangles per quad
-    plot!(p2, [max, fake_positive, fake_positive], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor=:auto, label=false)
-    plot!(p2, [max, fake_positive, max], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor=:auto, label=false)
-    plot!(p2, [min, fake_negative, fake_negative], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor=:auto, label=false)
-    plot!(p2, [min, fake_negative,min], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor=:auto, label=false)
+    plot!(p2,[max, fake_positive, fake_positive], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
+    plot!(p2, [max, fake_positive, max], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+    plot!(p2, [min, fake_negative, fake_negative], [ringA_y, ringA_y, ringB_y], seriestype=:shape, fillcolor=color_external, linecolor="green", label=false)
+    plot!(p2, [min, fake_negative,min], [ringA_y, ringB_y, ringB_y], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
 end
+
+#Additional square on the corners 
+Max = maximum([rings[1][i][1] for i in 1:n_long])
+Min = minimum([rings[1][i][1] for i in 1:n_long])
+fake_positive = Max + abs(rings[1][1][1] - rings[1][2][1])
+fake_negative = Min -abs(rings[1][1][1] - rings[1][2][1])
+plot!(p2, [Min, Min, fake_negative,fake_negative], [rings[end][1][2], -π/2, -π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+plot!(p2, [Min, Min, fake_positive,fake_positive], [rings[end][1][2], -π/2, -π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+plot!(p2, [Max, Max, fake_negative,fake_negative], [rings[end][1][2], π/2, π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+plot!(p2, [Max, Max, fake_positive,fake_positive], [rings[end][1][2], π/2, π/2, rings[end][1][2]], seriestype=:shape, fillcolor=color_middle, linecolor="green", label=false)
+
+
+
 
 
 
 
 # Only project the points, no grid lines or geodesics
-savefig(p2, "sphere_projection.png")
+savefig("sphere_projection.png")
