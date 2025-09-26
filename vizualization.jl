@@ -137,21 +137,22 @@ p2 = heatmap(θ, ϕ, Z,
     color = cgrad(:grays, rev=true),
     xlabel = L"\theta",
     ylabel = L"\varphi",
-    colorbar_title = L"\cos(\varphi)", 
-    xticks = (-π:π/2:π, [L"-\pi", L"-\pi/2", L"0", L"\pi/2", L"\pi"]), 
-    yticks = (-π/2:π/4:π/2, [L"-\pi/2", L"-\pi/4", L"0", L"\pi/4", L"\pi/2"]),
+    # colorbar_title = L"\cos(\varphi)", 
+    xticks = (-π:π:π, [L"-\pi", L"0", L"\pi"]),  # Fewer ticks for clarity
+    yticks = (-π/2:π/2:π/2, [L"\pi/2", L"0", L"\pi/2"]),  # Fewer ticks
     xlims = (-π, π),  # Strictly limit x-axis to [-π, π]
     ylims = (-π/2, π/2),  # Strictly limit y-axis to [-π/2, π/2]
-    framestyle=:box, size=(1200, 800),  # Increased size for better resolution
-    dpi=300,  # High DPI for better quality
+    framestyle=:box, size=(600, 400),  # Smaller base size since it will be scaled down
+    dpi=500,  # High DPI for better quality
     legend = false,
-    guidefontsize = 18,  # Axis label font size
-    tickfontsize = 14,   # Tick label font size
-    colorbar_tickfontsize = 12,  # Colorbar tick font size
-    colorbar_titlefontsize = 14,  # Colorbar title font size
+    # guidefontsize = 1,  # Much larger axis label font size
+    tickfontsize = 14,   # Much larger tick label font size
+    # colorbar_tickfontsize = 100,  # Larger colorbar tick font size
+    # colorbar_titlefontsize = 100,  # Larger colorbar title font size
     left_margin = 8Plots.mm,   # Add more space on the left for y-axis label
-    bottom_margin = 5Plots.mm,  # Add space at bottom for x-axis label
+    bottom_margin = 8Plots.mm,  # Add space at bottom for x-axis label
     right_margin = 10Plots.mm,  # Add space on right for colorbar
+    linewidth = 1.5,  # Thicker lines for better visibility
     )
 
 # # Add red horizontal line at ϕ = 0
@@ -212,7 +213,7 @@ color_pole = false
 #     plot!(p2, [point2[1], point2[1], point3[2], point3[1]], [point2[2], π/2, π/2, point2[2]], seriestype=:shape, fillcolor=color_pole, linecolor="red", label=false)
 # end
 
-linewidth = 1
+linewidth = 1.5  # Increased for better visibility when scaled down
 
 # Fill triangles between last ring and south pole
 for i in 1:n_long-1
