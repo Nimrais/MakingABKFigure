@@ -2,6 +2,7 @@ using Plots
 using LinearAlgebra
 using ColorVectorSpace
 using ColorSchemes
+using LaTeXStrings
 default(background_color = :white)
 
 # Params
@@ -124,9 +125,9 @@ savefig(p, "sphere_grid.png")
 
 
 
-# Define the domain
-ϕ = range(-π/2, π/2, length=300)
-θ = range(-π, π, length=300)
+# Define the domain (increased resolution for better quality)
+ϕ = range(-π/2, π/2, length=600)
+θ = range(-π, π, length=600)
 
 # Create a 2D array of cos(ϕ) values (constant along θ)
 Z = [cos(phi) for phi in ϕ, _ in θ]
@@ -134,16 +135,24 @@ Z = [cos(phi) for phi in ϕ, _ in θ]
 # Plot the heatmap with reversed grayscale
 p2 = heatmap(θ, ϕ, Z,
     color = cgrad(:grays, rev=true),
-    xlabel = "θ",
-    ylabel = "φ",
-    title = "Shading of the density",
-    colorbar_title = "cos(φ)", 
-    xticks = (-π:π/2:π, ["-π", "-π/2", "0", "π/2", "π"]), 
-    yticks = (-π/2:π/4:π/2, ["-π/2", "-π/4", "0", "π/4", "π/2"]),
+    xlabel = L"\theta",
+    ylabel = L"\varphi",
+    colorbar_title = L"\cos(\varphi)", 
+    xticks = (-π:π/2:π, [L"-\pi", L"-\pi/2", L"0", L"\pi/2", L"\pi"]), 
+    yticks = (-π/2:π/4:π/2, [L"-\pi/2", L"-\pi/4", L"0", L"\pi/4", L"\pi/2"]),
     xlims = (-π, π),  # Strictly limit x-axis to [-π, π]
     ylims = (-π/2, π/2),  # Strictly limit y-axis to [-π/2, π/2]
-    framestyle=:box, size=(900, 600),
-    legend = false,)
+    framestyle=:box, size=(1200, 800),  # Increased size for better resolution
+    dpi=300,  # High DPI for better quality
+    legend = false,
+    guidefontsize = 18,  # Axis label font size
+    tickfontsize = 14,   # Tick label font size
+    colorbar_tickfontsize = 12,  # Colorbar tick font size
+    colorbar_titlefontsize = 14,  # Colorbar title font size
+    left_margin = 8Plots.mm,   # Add more space on the left for y-axis label
+    bottom_margin = 5Plots.mm,  # Add space at bottom for x-axis label
+    right_margin = 10Plots.mm,  # Add space on right for colorbar
+    )
 
 # # Add red horizontal line at ϕ = 0
 # hline!([0], color = :red, linewidth = 2, alpha = 0.7, legend = false, linestyle = :dot)
@@ -272,4 +281,7 @@ plot!(p2, [Max, Max, fake_positive,fake_positive], [rings[end][1][2], π/2, π/2
 
 
 # Only project the points, no grid lines or geodesics
-savefig("sphere_projection.png")
+# Save as PDF for better quality (vector format)
+savefig(p2, "sphere_projection.pdf")
+# Also save as high-quality PNG if needed
+# savefig(p2, "sphere_projection.png", dpi=300)
